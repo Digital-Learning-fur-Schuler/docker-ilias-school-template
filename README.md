@@ -1,6 +1,3 @@
-# About this Repo
+# About this Repo (Work in Progress)
 
-This is the repository of the studer + raimann ag Docker image for
-[ILIAS](https://www.ilias.de). See [the Docker Hub
-page](https://hub.docker.com/r/sturai/ilias/) for information on how to use
-this Docker image.
+This repository will include the [ILIAS school template](https://docu.ilias.de/goto_docu_fold_8400.html) provided by the team SCHULE@ILIAS. The image is forked of the studer + raimann ag Docker image for [ILIAS](https://www.ilias.de).
