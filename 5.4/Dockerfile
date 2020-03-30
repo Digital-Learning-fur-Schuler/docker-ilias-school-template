@@ -1,6 +1,4 @@
-ARG PHP_VERSION
-
-FROM php:${PHP_VERSION}
+FROM php:7.3-apache
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     cron \
@@ -65,6 +63,22 @@ RUN curl -o ilias.tar.gz -SL https://github.com/ILIAS-eLearning/ILIAS/archive/v$
     && echo "$ILIAS_SHA1 *ilias.tar.gz" | sha1sum -c - \
     && tar -xzf ilias.tar.gz --strip-components=1 \
     && rm ilias.tar.gz
+
+ENV ILIAS_CORONA_CLIENT_SHA1=cdc0f020d3131f8f0a30ca42b67a85bf898a7252
+
+RUN curl -o coronaclient.zip -SL https://schule-ilias.de/coronaclient.zip \
+    && echo "$ILIAS_CORONA_CLIENT_SHA1 *coronaclient.zip" | sha1sum -c - \
+    && mkdir /opt/sctemp && unzip coronaclient.zip -d /opt/sctemp \
+    && rm coronaclient.zip
+
+RUN unzip /opt/sctemp/datadir.zip -d /opt/sctemp \
+    && cp -R /opt/sctemp/datadir/schule ${ILIAS_ILIASDATA_PATH} \
+    && unzip /opt/sctemp/webdir.zip -d /opt/sctemp \
+    && cp -R /opt/sctemp/webdir/schule ${ILIAS_DATA_PATH} \
+    && unzip /opt/sctemp/skin.zip -d /opt/sctemp \
+    && mkdir -p ${ILIAS_WWW_PATH}/Customizing/global/skin \
+    && cp -R /opt/sctemp/skin/Skin_ILIAS-54_CoronaSupport ${ILIAS_WWW_PATH}/Customizing/global/skin/ \
+    && unzip /opt/sctemp/datenbank.zip  -d /opt/sctemp 
 
 COPY docker-ilias-entrypoint /usr/local/bin/
 COPY install-ilias /usr/local/bin/
